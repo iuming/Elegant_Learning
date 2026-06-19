@@ -1,0 +1,10 @@
+! tutorial/intermediate/03_opt_ring.lte
+D1 : DRIF, L = 2.0
+QF : KQUAD, L = 0.3, K1 = 0.5
+QD : KQUAD, L = 0.3, K1 = -0.5
+BPM: MONI
+B1 : CSBEND, L = 1.5, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+
+CELL : LINE = (D1, QF, D1, B1, D1, QD, D1)
+RING : LINE = (CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

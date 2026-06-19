@@ -1,0 +1,22 @@
+! tutorial/basic/03_lattice_commands.ele
+! ============================================
+! 学习 lattice 定义的高级语法：
+! LINE、变参、条件、SUB_LINE、循环
+! elegant 的 lattice 文件支持 RPN 表达式
+
+&run_setup
+    lattice       = "lattice_commands.lte",
+    use_beamline  = "TOTAL",
+    p_central     = 2000.0,
+    default_order = 2,
+&end
+
+&twiss_output
+    filename = %s.twi,
+&end
+
+&run_control &end
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end

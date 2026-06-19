@@ -1,0 +1,48 @@
+! projects/fodo_line_full/lattice_fodo.lte
+! ============================================
+! 项目 1: FODO 传输线完整仿真
+! 从 lattice 设计到跟踪分析的全部步骤
+!
+! 物理参数:
+!   粒子: 电子 @ 1 GeV/c
+!   发射度: 1 nm·rad
+!   FODO 周期: 5 m
+
+! ---- 设计参数 ----
+! 目标 beta 函数:
+!   beta_max = 10 m, beta_min = 3 m
+!   tune per cell = 60° (π/3)
+
+beta_max  = 10.0
+beta_min  = 3.0
+L_cell    = 5.0           ! 单元长度
+mu_cell   = PI / 3        ! 相移 per 半单元
+
+! 四极磁铁强度 (薄透镜近似)
+L_quad  = 0.3             ! 四极有效长度
+L_half  = L_cell / 2
+L_dr    = L_half / 2 - L_quad / 2
+
+! 焦距: f ≈ 1/(K1*L)
+! 对于 FODO: f = L_half / (2*sin(mu/2))
+f_fodo = L_half / (2 * PI / 4)
+k_f = 1.0 / (f_fodo * L_quad)
+
+! ---- 元素定义 ----
+DRFT : DRIF, L = L_dr
+QF   : KQUAD, L = L_quad, K1 =  k_f
+QD   : KQUAD, L = L_quad, K1 = -k_f
+BPM1 : MONI
+BPM2 : MONI
+START: MARK
+END  : MARK
+
+! ---- Beamline ----
+HALF_CELL : LINE = (BPM1, DRFT, QF, DRFT)
+FULL_CELL : LINE = (HALF_CELL, DRFT, QD, DRFT, BPM2)
+
+! 8 个 FODO 单元 = 40 m 传输线
+FODO_LINE : LINE = (START, &
+    FULL_CELL, FULL_CELL, FULL_CELL, FULL_CELL, &
+    FULL_CELL, FULL_CELL, FULL_CELL, FULL_CELL, &
+    END)

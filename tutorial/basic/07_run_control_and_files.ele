@@ -1,0 +1,58 @@
+! tutorial/basic/07_run_control_and_files.ele
+! ============================================
+! 学习运行控制与文件管理:
+! run_control 各项参数
+! 如何使用 semaphore 文件进行多阶段仿真
+! %s 自动命名约定
+
+&run_setup
+    lattice       = "fodo_line.lte",
+    use_beamline  = "LINE",
+    p_central     = 1000.0,
+    default_order = 2,
+    ! rootname: 所有 %s 会被替换为 rootname
+    rootname      = "my_run",
+    ! 输出目录 (自动创建)
+    ! output_dir = "output/",
+    ! semaphore_file: 供 shell 脚本检测 run 完成
+    semaphore_file = "run.done",
+    ! 打印 lattice 信息
+    print_statistics = 1,
+    ! 强制使用偶数阶矩阵
+    ! force_odd_order = 0,
+&end
+
+! %s 命名约定：
+!   %s.twi  → my_run.twi
+!   %s.bun  → my_run.bun
+!   %s.param → my_run.param
+
+! ---- 单束团运行 ----
+&run_control
+    n_steps = 1,            ! 束团数 (通常 1)
+    n_passes = 1,           ! 每束团通过 lattice 的次数
+    ! 多圈跟踪 (适用于储存环):
+    ! n_passes = 1000,
+    ! first_is_fiducial = 1,
+&end
+
+&bunched_beam
+    n_particles_per_bunch = 50,
+    bunch = %s.bun,
+&end
+
+&track
+    ! 输出中心动量粒子
+    center_momentum_also = 1,
+    ! 每步输出相空间
+    ! output_monitors_only = 0,
+&end
+
+! ---- 多阶段仿真 ----
+! Stage 1: 初始跟踪
+! Stage 2: 从 Stage 1 的结果继续（使用 &sdds_beam）
+
+! 例如在 shell 中:
+!   elegant stage1.ele && elegant stage2.ele
+! stage2.ele 中用:
+! &sdds_beam input = "stage1.bun", &end

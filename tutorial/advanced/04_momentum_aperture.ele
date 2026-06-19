@@ -1,0 +1,61 @@
+! tutorial/advanced/04_momentum_aperture.ele
+! ============================================
+! 动量孔径 (Momentum Aperture) 计算
+! 寻找最大可接受的 dp/p 范围
+! 使用 &frequency_map 和 &momentum_aperture
+
+&run_setup
+    lattice       = "ma_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 3,
+    rootname      = "ma",
+&end
+
+! ---- 动量孔径扫描 ----
+&momentum_aperture
+    output               = %s.mmap,
+    
+    ! δ 扫描范围
+    delta_start  = -0.05,
+    delta_end    = 0.05,
+    steps        = 21,
+    
+    ! 跟踪参数
+    n_turns      = 500,
+    
+    ! 搜索方法
+    search_method = 1,
+    
+    ! 沿环的分段计算 (分离函数 lattice)
+    s_dependent  = 1,
+    
+    ! 包含 RF 桶
+    include_rf   = 1,
+    
+    
+    ! RF 参数
+    rf_voltage   = 1.5e6,     ! 1.5 MV
+    rf_frequency = 500e6,     ! 500 MHz
+    rf_harmon    = 1,
+&end
+
+! ---- 频率图 (Frequency Map) ----
+! 同时绘制 tune footprint 展示非线性
+&frequency_map
+    output = %s.fmap,
+    
+    ! 2D 初始条件扫描
+    xmin  = -0.01, xmax = 0.01, nx = 15,
+    ymin  = -0.003, ymax = 0.003, ny = 7,
+    
+    n_turns         = 512,
+    n_turns_to_log  = 256,     ! 后 256 圈用于 FFT
+    
+    delta_minimum   = -0.02,
+    delta_maximum   = 0.02,
+    n_delta         = 3,
+&end
+
+&run_control &end
+&track &end

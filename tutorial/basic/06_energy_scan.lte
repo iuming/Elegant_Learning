@@ -1,0 +1,11 @@
+! tutorial/basic/06_energy_scan.lte
+! 简单 FODO 线用于扫描示例
+
+QF : KQUAD, L = 0.3, K1 = 0.5
+QD : KQUAD, L = 0.3, K1 = -0.5
+D1 : DRIF, L = 1.0
+D2 : DRIF, L = 1.0
+
+HALF : LINE = (D1, QF, D2)
+CELL : LINE = (HALF, D1, QD, D2)
+LINE : LINE = (CELL, CELL, CELL)

@@ -1,0 +1,32 @@
+! tutorial/advanced/02_wake_ring.lte
+! 带阻抗和尾场元素的储存环
+
+L_qd = 0.3; L_b = 1.5; L_d = 2.0
+
+QF : KQUAD, L = L_qd, K1 = 0.6
+QD : KQUAD, L = L_qd, K1 = -0.6
+B1 : CSBEND, L = L_b, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+
+! 纵向阻抗 — 宽带谐振模型
+! Rs    = 并联阻抗 (Ω)
+! Q     = 品质因子
+! freq  = 谐振频率 (Hz)
+Z1: ZLONGIT, &
+    Rs = 10000.0, &          ! 10 kΩ (中等阻抗)
+    Q  = 1.0, &
+    frequency = 1.0e9        ! 1 GHz
+
+! 横向尾场 — wake 函数或阻抗
+! 使用 TRWAKE 定义横向尾场
+! 简化的短程尾场模型
+! TW1: TRWAKE, &
+!     filename = "transverse_wake.sdds"
+
+D1 : DRIF, L = L_d
+CAV: RFCA,  VOLT = 1.5, FREQ = 500.0, PHASE = 0
+
+CELL : LINE = (D1, QF, D1, B1, D1, QD, D1)
+RING : LINE = (Z1, CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

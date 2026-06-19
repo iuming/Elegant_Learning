@@ -1,0 +1,43 @@
+! tutorial/basic/06_energy_scan.ele
+! ============================================
+! 学习如何扫描参数（动量、四极强度等）
+! elegant 的扫描功能: vary_element + vary_element 循环
+
+&run_setup
+    lattice       = "energy_scan.lte",
+    use_beamline  = "LINE",
+    p_central     = 1000.0,
+    default_order = 2,
+    rootname      = "scan",
+&end
+
+! ---- 参数扫描 ----
+! 扫描动量: p_central 从 500 到 1500 MeV/c, 步长 100
+! 使用 &vary_element 扫描 lattice 元素参数
+
+! 方法 1: 在 run_setup 中使用外部循环
+! 需要多个 elegant 调用（通常用脚本）
+
+! 方法 2: 使用 &vary_element（扫描一个元素参数）
+! 这里扫描四极磁铁强度看光学函数变化
+
+&vary_element
+    name        = QF,
+    item        = K1,      ! 变化 K1 参数
+    initial     = 0.3,     ! 初始值
+    final       = 0.9,     ! 终值
+    step_size   = 0.05,    ! 步长
+&end
+
+! ---- 光学计算 ----
+&twiss_output
+    filename = %s.twi,
+    output_at_each_step = 0,   ! 仅输出端点
+&end
+
+&run_control &end
+
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end

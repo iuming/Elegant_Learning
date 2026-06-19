@@ -1,0 +1,51 @@
+! tutorial/basic/03_lattice_commands.lte
+! ============================================
+! lattice 定义中的高级语法
+
+! ---- RPN 表达式与变量 ----
+! 使用 RPN (逆波兰表示法) 表达式定义参数
+! 数学运算: + - * / sqr sqrt
+! 变量一旦定义，在整个文件中可用
+
+! 基础参数
+L_cell = 10.0
+n_cell = 4
+phase_adv = 72              ! 每单元相移 (deg)
+beta_max  = 15.0            ! 最大 beta 函数 (m)
+
+! 计算四极磁铁强度 (薄透镜近似)
+k_f = 2 * sqr(1.0) / (beta_max * L_cell / 4)
+
+! ---- LINE 定义 ----
+! 支持续行符号 &
+! 支持嵌套 LINE 引用
+
+! 半单元
+L_half = L_cell / 2
+L_dr   = L_half / 2 - 0.15
+
+DRIFT1 : DRIF, L = L_dr
+DRIFT2 : DRIF, L = L_dr
+QF     : KQUAD, L = 0.3, K1 =  k_f
+QD     : KQUAD, L = 0.3, K1 = -k_f
+
+HALF_CELL : LINE = (DRIFT1, QF, DRIFT2)
+CELL       : LINE = (HALF_CELL, DRIFT1, QD, DRIFT2)
+
+! ---- 使用 REPEAT 定义重复结构 ----
+! CELL * 4 或使用显式列表
+
+! LINE 的两种写法：
+! 1. 显式列出:
+FOUR_CELLS : LINE = (CELL, CELL, CELL, CELL)
+
+! 2. 使用重复计数乘号:
+TOTAL : LINE = (CELL * n_cell)
+
+! ---- 反射对称 (REFLECT) ----
+! REFLECT 创建一个 beamline 的镜像
+! TOTAL_R : LINE = (TOTAL, -TOTAL)
+
+! ---- SUB_LINE 选择部分元素 ----
+! SUB_LINE 可以截取已有 beamline 的一部分
+! SUB_CELL : SUB_LINE, LINE = TOTAL, START = "QF", END = "QD"

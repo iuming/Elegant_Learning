@@ -1,0 +1,21 @@
+! tutorial/advanced/04_ma_ring.lte
+! 动量孔径分析用 lattice
+! 包含 RF 腔、六极磁铁、八极磁铁
+
+L_qd = 0.3; L_b = 1.5; L_d = 2.0; L_sx = 0.1
+
+QF : KQUAD, L = L_qd, K1 = 0.6
+QD : KQUAD, L = L_qd, K1 = -0.6
+B1 : CSBEND, L = L_b, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+SF : KSEXT, L = L_sx, K2 = 12.0
+SD : KSEXT, L = L_sx, K2 = -12.0
+CAV: RFCA,  VOLT = 1.5, FREQ = 500.0, PHASE = 0
+
+D1 : DRIF, L = L_d
+
+CELL : LINE = (D1, B1, D1, SF, QF, SD, QD, D1, CAV)
+
+RING : LINE = (CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

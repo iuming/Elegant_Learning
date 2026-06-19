@@ -1,0 +1,62 @@
+! projects/storage_ring_design/run_da.ele
+! ============================================
+! 动力学孔径分析
+! 包括: DA 扫描、频率图、动量孔径
+
+&run_setup
+    lattice       = "lattice_sr.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 3,
+    rootname      = "sr_da",
+&end
+
+! ---- 动力学孔径 ----
+&dynamic_aperture
+    output   = %s.da,
+    
+    ! 扫描网格
+    xmin     = -0.03,  xmax = 0.03,   nx = 31,
+    ymin     = -0.008, ymax = 0.008,  ny = 17,
+    
+    ! 跟踪参数
+    n_turns  = 500,
+    
+    ! 动量偏移
+    n_delta  = 5,
+    delta_start = -0.03,
+    delta_end   = 0.03,
+    
+    ! 搜索设置
+    search_method    = 1,
+    steps_back       = 2,
+    
+    ! 输出容差
+    npz_tolerance        = 1.0e-3,
+    new_delta_for_backup = 1,
+&end
+
+! ---- 频率图分析 (FMA) ----
+&frequency_map
+    output   = %s.fmap,
+    
+    ! 较小范围的精细扫描
+    xmin     = -0.01,  xmax = 0.01,  nx = 21,
+    ymin     = -0.003, ymax = 0.003, ny = 13,
+    
+    n_turns         = 512,
+    n_turns_to_log  = 256,    ! 后 256 圈用于 FFT 计算 tune
+    
+    ! 包含多个动量层
+    n_delta         = 3,
+    delta_start     = -0.02,
+    delta_end       = 0.02,
+&end
+
+&run_control &end
+&track
+    ! FMA 需要较长时间跟踪
+    ! 同步辐射影响 tune footprint
+    include_synchrad = 1,
+    ! ISR = 1,
+&end

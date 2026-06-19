@@ -1,0 +1,48 @@
+! tutorial/intermediate/04_rf_acceleration.ele
+! ============================================
+! RF 加速与纵向动力学
+! 演示高频腔加速、同步加速器振荡
+
+&run_setup
+    lattice       = "rf_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "rf_demo",
+&end
+
+! ---- 定义 RF 腔 ----
+! 已在 lattice 中定义 RFCA
+
+! ---- 纵向动力学 ----
+&bunched_beam
+    n_particles_per_bunch = 100,
+    bunch = %s.bun,
+    ! 初始纵向分布
+    emit_x  = 1.0e-9,
+    emit_y  = 1.0e-9,
+    beta_x  = 5.0,
+    alpha_x = 0.0,
+    beta_y  = 3.0,
+    alpha_y = 0.0,
+    ! 纵向参数
+    Sdelta = 1.0e-3,     ! 1‰ RMS 能散
+    Ss     = 3.0e-3,     ! 3 mm RMS 束团长度
+&end
+
+! 多圈跟踪（观察同步振荡）
+&run_control
+    n_steps  = 1,
+    n_passes = 500,       ! 500 圈
+&end
+
+&track
+    center_momentum_also = 1,
+&end
+
+! 在每个 MONI 处记录纵向相空间
+&watch
+    filename = %s.w1,
+    mode     = "coordinates",
+    ! 输出 (t, ) 纵向相空间
+&end

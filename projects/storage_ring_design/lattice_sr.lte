@@ -1,0 +1,85 @@
+! projects/storage_ring_design/lattice_sr.lte
+! ============================================
+! 项目 2: 储存环 lattice 设计 — 从光学到 DA
+! 一个完整的分离函数储存环
+! 基于 Chasman-Green 消色弧设计
+!
+! 设计目标:
+!   - 能量: 3 GeV
+!   - 发射度: ≤ 2 nm·rad
+!   - DA: ≥ 10 mm
+!   - 含注入方案
+
+! ---- 全局参数 ----
+n_cells   = 18           ! 18 个单元
+C         = 180.0        ! 周长 (m)
+L_cell    = C / n_cells
+
+! 磁铁参数
+L_Q   = 0.3              ! 四极长度
+L_B   = 1.2              ! 二极长度
+L_SX  = 0.15             ! 六极长度
+L_D   = L_cell / 2 - L_Q - L_B/2 - L_SX/2
+
+! 二极角度
+theta_b = 2 * PI / n_cells  ! 每个单元的二极角度
+
+! ---- 匹配得到的四极强度 ----
+K_QF = 1.2               ! 水平聚焦 QF
+K_QD = -1.0              ! 垂直聚焦 QD
+K_SF = 15.0              ! 聚焦六极 (色品校正)
+K_SD = -12.0             ! 散焦六极
+
+! ---- 元素定义 ----
+QF  : KQUAD, L = L_Q,  K1 = K_QF
+QD  : KQUAD, L = L_Q,  K1 = K_QD
+B   : CSBEND, L = L_B,  ANGLE = theta_b, E1 = theta_b/2, E2 = theta_b/2
+SF  : KSEXT, L = L_SX, K2 = K_SF
+SD  : KSEXT, L = L_SX, K2 = K_SD
+BPM : MONI
+HC  : HKICK
+VC  : VKICK
+DR1 : DRIF, L = L_D * 0.4
+DR2 : DRIF, L = L_D * 0.4
+DR3 : DRIF, L = L_D * 0.2
+
+! 注入元件
+INK  : HKICK              ! 注入 kicker
+SEPT : EKICKER            ! septum (静电场)
+DR_INJ: DRIF, L = 1.0
+
+! RF 腔
+CAV  : RFCA, VOLT = 2.0, FREQ = 500.0e6, PHASE = 0
+
+! ---- Beamline 定义 ----
+! 标准单元: QF B SD QD SF
+STANDARD_CELL : LINE = ( &
+    DR1, QF, DR2, B, DR2, SD, QD, DR1, SF, BPM &
+)
+
+! 注入单元: 额外的 kicker 和 septum
+INJECTION_CELL : LINE = ( &
+    DR_INJ, INK, DR_INJ, SEPT, DR_INJ, STANDARD_CELL &
+)
+
+! 腔单元
+CAV_CELL : LINE = ( &
+    CAV, DR1, STANDARD_CELL &
+)
+
+! ---- 完整环 ----
+! 1 腔单元 + 16 标准单元 + 1 注入单元
+RING : LINE = ( &
+    CAV_CELL, &
+    STANDARD_CELL, STANDARD_CELL, STANDARD_CELL, &
+    STANDARD_CELL, STANDARD_CELL, STANDARD_CELL, &
+    STANDARD_CELL, STANDARD_CELL, STANDARD_CELL, &
+    STANDARD_CELL, STANDARD_CELL, STANDARD_CELL, &
+    STANDARD_CELL, STANDARD_CELL, STANDARD_CELL, &
+    STANDARD_CELL, &
+    INJECTION_CELL &
+)
+
+! ---- 用于匹配的子线 ----
+! 单单元: 用于 tune 匹配
+ONE_CELL : LINE = (STANDARD_CELL)

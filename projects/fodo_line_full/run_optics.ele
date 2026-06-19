@@ -1,0 +1,32 @@
+! projects/fodo_line_full/run_optics.ele
+! ============================================
+! FODO 传输线光学计算
+! 验证 lattice 设计: 检查 beta 函数、相移
+
+&run_setup
+    lattice       = "lattice_fodo.lte",
+    use_beamline  = "FODO_LINE",
+    p_central     = 1000.0,            ! 1 GeV/c
+    default_order = 2,
+    rootname      = "fodo_optics",
+&end
+
+! ---- Twiss 计算 (传输线模式) ----
+&twiss_output
+    filename            = %s.twi,
+    output_at_each_step = 1,
+    matched             = 0,           ! 传输线: 不需要周期性
+&end
+
+! ---- 矩阵输出 ----
+&matrix_output
+    output_before_matrices = %s.matrix,
+&end
+
+&run_control &end
+
+! 单粒子用于光学
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end

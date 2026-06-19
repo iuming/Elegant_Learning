@@ -1,0 +1,28 @@
+! tutorial/intermediate/05_injection.lte
+! 包含注入 kicker 和 septum 的储存环
+
+L_qd = 0.3
+L_b  = 1.5
+L_d  = 2.0
+
+QF : KQUAD, L = L_qd, K1 = 0.6
+QD : KQUAD, L = L_qd, K1 = -0.6
+B1 : CSBEND, L = L_b, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+
+! 注入元件
+! BUMPER: 注入 bump (三个脉冲磁铁的组合)
+! KICKER: 单个脉冲磁铁
+! 在注入点放置校正磁铁作为 kicker
+INK : HKICK    ! 注入 kicker (水平)
+SEPT: HKICK    ! septum 磁铁 (实际中用 EKICKER)
+
+D1 : DRIF, L = L_d
+CELL : LINE = (D1, INK, D1, QF, D1, B1, D1, QD, D1)
+
+! Septum 放置在注入点
+INJ_POINT : LINE = (D1, SEPT, D1)
+
+RING : LINE = (INJ_POINT, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

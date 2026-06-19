@@ -1,0 +1,58 @@
+! tutorial/basic/05_twiss_and_optics.ele
+! ============================================
+! 学习光学函数计算：
+! Twiss 参数、动量紧缩因子、色散、色品
+! 使用 twiss_output 和 matrix_output
+
+&run_setup
+    lattice       = "optics_demo.lte",
+    use_beamline  = "FODO_RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    ! 重要：对于环，需设置此参数
+    rootname      = "optics",
+&end
+
+! ---- Twiss 参数计算 ----
+! twiss_output 是 elegant 最核心的输出命令之一
+&twiss_output
+    filename              = %s.twi,
+    ! matched=1 表示先计算周期性解（适用于储存环）
+    matched               = 1,
+
+    ! 输出选项
+    output_at_each_step   = 1,          ! 每个元素输出一行
+    radiation_integrals   = 1,          ! 计算 5 个同步辐射积分
+    concat_order          = 3,          ! 矩阵级联阶数
+
+    ! 计算耦合 Twiss 参数
+    compute_3d_coupling   = 1,
+
+    ! 包含高阶色散
+    higher_order_chromaticity = 1,      ! 计算高阶色品
+
+    ! 输出到件
+    ! 自动生成: optics.twi, optics.param, optics.aper, optics.sig
+&end
+
+! ---- 矩阵输出 ----
+! 输出传输矩阵元素
+&matrix_output
+    output_before_matrices = %s.matrix,
+    printout_all_columns  = 1,
+&end
+
+! ---- 动量紧缩因子 ----
+! mom_comp_output 计算沿环的动量紧缩因子
+&momentum_aperture
+    output          = %s.mmap,
+    ! 计算横向和纵向接受度
+    s_start         = 0,
+&end
+
+&run_control &end
+
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end

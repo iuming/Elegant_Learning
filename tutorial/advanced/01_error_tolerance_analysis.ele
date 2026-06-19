@@ -1,0 +1,78 @@
+! tutorial/advanced/01_error_tolerance_analysis.ele
+! ============================================
+! 误差与容差分析
+! 评估磁铁对准和场质量误差对束流性能的影响
+! 使用随机误差 + 多次运行 = Monte Carlo
+
+&run_setup
+    lattice       = "storage_ring_full.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "error_study",
+&end
+
+! ---- 设置随机误差种子 ----
+&error_control
+    error_log = %s.error,
+    ! 用不同种子做多次 Monte Carlo 运行
+    random_number_seed = 12345,
+&end
+
+! ---- 四极磁铁对准误差 ----
+! 模拟实际安装时的定位误差
+&malign
+    element_type = KQUAD,
+    dx     = 1.0e-4,     ! 100 μm RMS (极高水平)
+    dy     = 1.0e-4,
+    dtilt  = 2.0e-4,     ! 200 μrad 倾斜
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+! ---- 二极磁铁场误差 ----
+! 模拟磁铁制造误差导致的场偏差
+&random_multipole_errors
+    element_type = CSBEND,
+    ! 基本场的相对误差
+    delta_B   = 1.0e-4,    ! 0.01% 场误差
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+! ---- 四极磁铁梯度误差 ----
+&random_multipole_errors
+    element_type = KQUAD,
+    ! 梯度的相对误差
+    delta_K1  = 5.0e-4,    ! 0.05% 梯度误差
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+! ---- 六极磁铁误差 ----
+&random_multipole_errors
+    element_type = KSEXT,
+    delta_K2 = 1.0e-3,
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 2,
+&end
+
+! ---- Monte Carlo 多次运行 ----
+! elegant 不支持内置 MC 循环, 需用脚本多次调用
+! 脚本示例:
+!   for seed in 1 2 3 4 5 10 15 20 30 40 50; do
+!       elegant error_study.ele -macro=SEED=$seed
+!   done
+! 每次运行改变 random_number_seed
+
+! ---- 后处理 ----
+&run_control &end
+&twiss_output
+    filename = %s.twi,
+    matched  = 0,   ! 有误差后往往无法找到完美的周期性解
+&end
+
+&bunched_beam
+    n_particles_per_bunch = 100,
+&end
+&track &end

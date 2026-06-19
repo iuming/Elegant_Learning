@@ -1,0 +1,39 @@
+! tutorial/basic/01_fodo.lte
+! ============================================
+! 简单 FODO 线 lattice 定义
+! 配合 01_hello_elegant.ele 使用
+!
+! lattice 文件结构:
+!   1. 定义单元素 (DRIF, QUAD, BEND, ...)
+!   2. 在 beamline 中将元素串联
+
+! ---- 束线参数 ----
+! 动量 1 GeV/c 电子
+! FODO 半周期长度
+
+L_half = 2.0            ! 半单元长度 (m)
+L_drift = 0.5           ! 漂移段长度
+L_quad  = 0.2           ! 四极磁铁长度
+k_quad  = 0.5           ! 四极磁铁强度 (1/m²)
+
+! ---- 定义元素 ----
+! 漂移段
+DR1 : DRIF, L = L_drift
+DR2 : DRIF, L = L_drift
+
+! 聚焦四极磁铁 (垂直方向聚焦)
+QF  : KQUAD, L = L_quad, K1 = k_quad
+
+! 散焦四极磁铁
+QD  : KQUAD, L = L_quad, K1 = -k_quad
+
+! ---- 定义 beamline ----
+! FODO 半单元: DR1 QF DR2
+! FODO 完整单元: DR1 QF DR2 DR1 QD DR2
+FODO_HALF : LINE = (DR1, QF, DR2)
+FODO      : LINE = (FODO_HALF, DR1, QD, DR2)
+
+! 多周期 FODO 线
+! 10 个完整 FODO 单元
+TEST_LINE : LINE = (FODO, FODO, FODO, FODO, FODO, &
+                    FODO, FODO, FODO, FODO, FODO)

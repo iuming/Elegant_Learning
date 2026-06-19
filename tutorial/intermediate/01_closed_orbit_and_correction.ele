@@ -1,0 +1,61 @@
+! tutorial/intermediate/01_closed_orbit_and_correction.ele
+! ============================================
+! 闭合轨道计算与校正
+! 演示: 误差异常 → 闭轨畸变 → 轨道校正
+! 三步走: 误差 → 闭轨 → 校正
+
+&run_setup
+    lattice       = "storage_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "orbit_corr",
+&end
+
+! ---- Step 1: 设置磁铁对准误差 ----
+! 随机误差导致闭轨畸变
+&error_control
+    error_log = %s.error,
+    ! 种子确保可重复
+    random_number_seed = 12345,
+&end
+
+! 四极磁铁横向偏移 (50 μm RMS)
+&random_multipole_errors
+    element_type = KQUAD,
+    dx           = 5.0e-5,     ! x 偏移 (m)
+    dy           = 5.0e-5,     ! y 偏移 (m)
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+! ---- Step 2: 计算闭合轨道 ----
+&closed_orbit
+    output = %s.clo,
+    ! 输出每个 MONI 位置的轨道
+&end
+
+&run_control &end
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end
+
+! ---- Step 3: 轨道校正 ----
+! 使用 &correct 进行基于 SVD 的轨道校正
+&correct
+    mode              = "orbit",
+    ! 校正器
+    corrector_output  = %s.cor,       ! 输出所需的校正器强度
+    trajectory_output = %s.traj,      ! 校正后的轨道
+    
+    ! SVD 截断
+    svd_cutoff        = 0.01,         ! 截断小奇异值
+    
+    ! 迭代次数
+    n_iterations      = 2,
+    n_xy_cycles       = 2,
+    
+    ! 校正模式
+    recompute_orbit   = 1,
+&end

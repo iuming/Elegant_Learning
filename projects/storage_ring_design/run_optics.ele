@@ -1,0 +1,52 @@
+! projects/storage_ring_design/run_optics.ele
+! ============================================
+! 储存环光学计算
+! 计算: Twiss 参数、辐射积分、平衡发射度、耦合分析
+
+&run_setup
+    lattice       = "lattice_sr.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,          ! 3 GeV/c
+    default_order = 3,               ! 包含六极磁铁
+    rootname      = "sr_optics",
+! 对于储存环，需要定义 rootname
+&end
+
+! ---- 周期性 Twiss 计算 ----
+&twiss_output
+    filename              = %s.twi,
+    output_at_each_step   = 1,
+    matched               = 1,        ! 寻找周期解
+    
+    ! 辐射效应
+    radiation_integrals   = 1,        ! I1-I5
+    
+    ! 高阶效应
+    higher_order_chromaticity = 1,
+    
+    ! 耦合分析
+    compute_3d_coupling   = 1,
+    
+    ! 输出平衡发射度等
+    ! 自动生成 %s.param, %s.aper
+&end
+
+! ---- 矩阵输出 (用于验证 symplecticity) ----
+&matrix_output
+    output_before_matrices = %s.matrix,
+    full_matrix_only       = 1,
+&end
+
+! ---- 动量紧缩因子 ----
+&momentum_aperture
+    output     = %s.mmap,
+    n_turns    = 256,
+    ! 后续会计算 DA 和 FMA
+&end
+
+&run_control &end
+
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end

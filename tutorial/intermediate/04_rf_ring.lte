@@ -1,0 +1,25 @@
+! tutorial/intermediate/04_rf_ring.lte
+! 带 RF 腔的储存环
+
+L_qd = 0.3
+L_b  = 1.5
+L_d  = 2.0
+
+QF : KQUAD, L = L_qd, K1 = 0.6
+QD : KQUAD, L = L_qd, K1 = -0.6
+B1 : CSBEND, L = L_b, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+
+! RF 腔
+! VOLT   = 1.5 MV（峰值电压）
+! FREQ   = 500 MHz
+! PHASE  = 0° (storage 模式, 不加速仅补偿损耗)
+CAV1: RFCA, VOLT = 1.5, FREQ = 500.0, PHASE = 0
+
+! 腔的相位如果需要加速:
+! CAV_ACC: RFCA, VOLT = 5.0, FREQ = 500.0, PHASE = 10
+
+CELL : LINE = (CAV1, QF, B1, QD)
+RING : LINE = (CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

@@ -1,0 +1,46 @@
+! tutorial/intermediate/02_chromaticity_correction.ele
+! ============================================
+! 色品 (Chromaticity) 计算与校正
+! 色品 = ∂ν/∂δ, 自然色品 < 0 (需要校正)
+! 使用六极磁铁校正色品到正值
+
+&run_setup
+    lattice       = "chrom_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "chrom",
+! 必须使用 2 阶 (或更高) 才能包含六极磁铁效应
+&end
+
+! ---- 计算自然色品 ----
+! 扫动量计算频移
+&vary_element
+    name    = all,
+    item    = K1,
+    initial = 0.0, final = 0.0,  ! 无扫描, 仅一次计算
+    step_size = 0,
+&end
+
+&twiss_output
+    filename = %s.twi,
+    output_at_each_step = 1,
+    matched = 1,
+    ! 关键: 计算高阶色品 (依赖 dK/dδ)
+    higher_order_chromaticity = 1,
+    
+    ! 辐射积分 (I1-I5)
+    radiation_integrals = 1,
+&end
+
+&run_control &end
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end
+
+! ---- 计算校正后的色品 ----
+! 设置六极磁铁强度
+! &alter_elements name=S1, item=K2, value=desired_K2 &end
+
+! 二阶色品校正需要 octupole (KOCT)

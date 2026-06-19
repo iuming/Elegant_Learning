@@ -1,0 +1,93 @@
+! projects/storage_ring_design/run_errors.ele
+! ============================================
+! 误差分析 — Monte Carlo 多误差种子
+! 评估由于磁铁对准和场质量导致的性能下降
+!
+! 使用方法:
+!   需要多次运行来统计。使用 batch_runner.sh 的 MC 模式:
+!     bash examples/batch_runner.sh mc run_errors.ele 20 mc_results/
+
+&run_setup
+    lattice       = "lattice_sr.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 3,
+    rootname      = "sr_errors",
+&end
+
+! ---- 随机种子 ----
+&error_control
+    error_log          = %s.error,
+    random_number_seed = 12345,      ! 每次运行改变此值
+&end
+
+! ---- 对准误差 ----
+&malign
+    element_type = KQUAD,
+    dx     = 1.0e-4,         ! 100 μm
+    dy     = 1.0e-4,
+    dtilt  = 2.0e-4,         ! 200 μrad
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+&malign
+    element_type = CSBEND,
+    dx     = 5.0e-5,         ! 50 μm (弯转更精确)
+    dy     = 5.0e-5,
+    dtilt  = 1.0e-4,
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+&malign
+    element_type = KSEXT,
+    dx     = 1.0e-4,
+    dy     = 1.0e-4,
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+! ---- 场质量误差 ----
+&random_multipole_errors
+    element_type = KQUAD,
+    delta_K1     = 5.0e-4,   ! 0.05% 梯度误差
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+&random_multipole_errors
+    element_type = CSBEND,
+    delta_B      = 1.0e-4,   ! 0.01% 场误差
+    distribution_type = "gaussian",
+    limit_in_sigmas   = 3,
+&end
+
+! ---- 有误差下的光学计算 ----
+&twiss_output
+    filename = %s.twi,
+    output_at_each_step = 1,
+    matched  = 0,           ! 有误差 → 求端到端解
+&end
+
+! ---- 有误差下的轨道 ----
+&closed_orbit
+    output = %s.clo,
+&end
+
+! 轨道校正
+&correct
+    mode              = "orbit",
+    corrector_output  = %s.cor,
+    trajectory_output = %s.cor_orb,
+    svd_cutoff        = 0.01,
+    n_iterations      = 2,
+    n_xy_cycles       = 2,
+&end
+
+&run_control &end
+
+&bunched_beam
+    n_particles_per_bunch = 100,
+&end
+&track &end

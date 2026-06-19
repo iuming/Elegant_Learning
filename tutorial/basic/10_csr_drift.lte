@@ -1,0 +1,10 @@
+! tutorial/basic/10_csr_drift.lte
+! CSR 漂移段 lattice
+! 使用 CSBEND 元素支持 CSR 计算
+! 参数设置中的 ISR=1 启用非相干同步辐射
+
+B1 : CSBEND, L = 0.5, ANGLE = 0.1, E1 = 0, E2 = 0
+D1 : DRIF, L = 1.0
+
+! 一个弯转 + 一段漂移（CSR 影响最明显的区域）
+CSR_DRIFT : LINE = (B1, D1)

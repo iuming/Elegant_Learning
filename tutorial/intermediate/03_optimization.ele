@@ -1,0 +1,67 @@
+! tutorial/intermediate/03_optimization.ele
+! ============================================
+! 使用 elegant 的优化功能
+! 目标: 使 beta 函数在特定位置达到目标值
+! 方法: 调整四极磁铁强度
+
+&run_setup
+    lattice       = "opt_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "optimize",
+&end
+
+! ---- 定义优化目标和变量 ----
+
+! 优化变量: 四极磁铁强度
+&vary_element
+    name    = QF,
+    item    = K1,
+    ! 搜索范围
+    lower   = 0.2,
+    upper   = 1.5,
+    initial = 0.6,
+    step_size = 0.01,
+&end
+&vary_element
+    name    = QD,
+    item    = K1,
+    lower   = -1.5,
+    upper   = -0.2,
+    initial = -0.6,
+    step_size = 0.01,
+&end
+
+! 优化目标
+! 目标 1: tune x 接近 0.25
+! 目标 2: tune y 接近 0.20
+! 目标 3: beta_x @ BPM1 最小化
+&optimization_setup
+    ! 优化算法
+    method    = "simplex",     ! 或 "powell", "genetic"
+    ! 收敛容差
+    tolerance = 1.0e-4,
+    ! 最大迭代
+    n_evaluations = 200,
+    ! 目标函数文件
+    target    = %s.target,
+&end
+
+! 每次优化迭代计算的目标:
+&twiss_output
+    filename = %s.twi,
+    matched  = 1,
+&end
+
+&optimization_covariable
+    ! 从 SDDS 文件中提取优化目标值
+    name     = nux,           ! 水平 tune
+    ! 使用 sddsprocess 从 twiss 文件提取
+&end
+
+&run_control &end
+&bunched_beam
+    n_particles_per_bunch = 1,
+&end
+&track &end

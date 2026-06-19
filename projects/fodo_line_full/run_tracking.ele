@@ -1,0 +1,51 @@
+! projects/fodo_line_full/run_tracking.ele
+! ============================================
+! FODO 传输线粒子跟踪
+! 分析束团在 40 m 传输后的发射度增长
+
+&run_setup
+    lattice       = "lattice_fodo.lte",
+    use_beamline  = "FODO_LINE",
+    p_central     = 1000.0,
+    default_order = 2,
+    rootname      = "fodo_track",
+&end
+
+! ---- 初始束团 ----
+&bunched_beam
+    n_particles_per_bunch = 1000,
+    bunch                 = %s.bun,
+
+    ! 发射度
+    emit_x  = 1.0e-9,      ! 1 nm·rad
+    emit_y  = 1.0e-9,
+    
+    ! 初始 Twiss 参数 (匹配条件...)
+    beta_x  = 10.0,
+    alpha_x = 0.0,
+    beta_y  = 3.0,
+    alpha_y = 0.0,
+    
+    ! 束团长度
+    Ss     = 2.0e-3,
+    Sdelta = 1.0e-3,
+    
+    distribution_type[0] = "gaussian",
+    limit_in_sigmas[0]   = 3,
+&end
+
+&run_control
+    n_steps = 1,
+&end
+
+! ---- 跟踪 ----
+&track
+    center_momentum_also = 1,
+&end
+
+! ---- 在每个 BPM 位置记录 ----
+&watch
+    filename = %s.w1,
+    mode     = "parameters",
+    ! 记录 rms 束斑大小, 发射度等
+&end

@@ -1,0 +1,43 @@
+! tutorial/basic/01_hello_elegant.ele
+! ============================================
+! 第一个 elegant 仿真：4 个四极磁铁构成的 FODO 线
+! 演示：run_setup → lattice 定义 → 束流跟踪
+
+! ---- 仿真设置 ----
+&run_setup
+    lattice       = "fodo.lte",          ! 引用同目录下的 lattice 文件
+    use_beamline  = "FODO",              ! 使用 lattice 中定义的 beamline
+    p_central     = 1000.0,               ! 中心动量 (MeV/c)
+    default_order = 2,                   ! 默认传输矩阵阶数
+    parameters    = "params.out",         ! 输出参数文件
+&end
+
+! ---- 束流初始化 ----
+! 定义初始束团参数
+&bunched_beam
+    n_particles_per_bunch = 100,          ! 粒子数
+    bunch                 = %s.bun,       ! 输出文件
+    ! 横向发射度
+    emit_x  = 1.0e-9,                    ! x 发射度 (m·rad)
+    emit_y  = 1.0e-9,                    ! y 发射度 (m·rad)
+    ! 束团长度与能散
+    ! 默认使用 sigma 矩阵
+&end
+
+! ---- Twiss 参数计算 ----
+! 计算整个 lattice 的 beta、alpha 等参数
+&twiss_output
+    filename  = %s.twi,                  ! Twiss 参数输出
+    matched   = 0,                       ! 不要求匹配 (对于传输线)
+    output_at_each_step = 1,             ! 输出每个元素处的值
+&end
+
+! ---- 运行控制 ----
+&run_control
+    n_steps = 1,                         ! 束团数
+&end
+
+! ---- 粒子跟踪 ----
+&track
+    center_momentum_also = 1,            ! 也跟踪中心动量粒子
+&end

@@ -1,0 +1,53 @@
+! tutorial/advanced/02_wakefield_impedance.ele
+! ============================================
+! 尾场与阻抗效应
+! 使用 TRWAKE（横向尾场）和 ZLONGIT（纵向阻抗）
+! 对高流强储存环至关重要
+
+&run_setup
+    lattice       = "wake_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "wake",
+&end
+
+! ---- 高流强束团 (尾场效应显著) ----
+&bunched_beam
+    n_particles_per_bunch = 5000,    ! 高电荷束团
+    bunch = %s.bun,
+    bunch_charge = 1.0e-9,           ! 1 nC
+
+    emit_x   = 1.0e-9,
+    emit_y   = 1.0e-9,
+    beta_x   = 5.0,
+    alpha_x  = 0.0,
+    beta_y   = 3.0,
+    alpha_y  = 0.0,
+    
+    ! 短束团: 尾场效应更强
+    Ss       = 2.0e-3,     ! 2 mm RMS
+    Sdelta   = 1.0e-3,
+&end
+
+! ---- 使用 ZLONGIT 元素定义纵向阻抗 ----
+! 已在 lattice 中定义
+
+! ---- 使用 TRWAKE 元素定义横向尾场 ----
+! 已在 lattice 中定义
+
+! 多圈跟踪
+&run_control
+    n_steps  = 1,
+    n_passes = 200,          ! 200 圈
+&end
+
+&track
+    center_momentum_also = 1,
+&end
+
+! 监测束团长度和能散演化
+&watch
+    filename = %s.w1,
+    mode     = "parameters",  ! 输出束团参数
+&end

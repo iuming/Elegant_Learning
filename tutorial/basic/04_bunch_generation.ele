@@ -1,0 +1,74 @@
+! tutorial/basic/04_bunch_generation.ele
+! ============================================
+! 学习束团生成的不同方法：
+! 1. sigma_matrix: 从 σ 矩阵生成
+! 2. 自定义分布: 读取文件
+! 3. bunched_beam: 预设束团参数
+
+&run_setup
+    lattice       = "simple_drift.lte",
+    use_beamline  = "LINE",
+    p_central     = 1000.0,
+    default_order = 2,
+&end
+
+! ---- 方法 1: sigma_matrix — 从 σ 矩阵生成高斯分布 ----
+&sigma_matrix  ! 定义初始二阶矩矩阵
+    ! 6×6 σ 矩阵（对角元素 = σ²）
+    !        x       x'      y       y'      s       δ
+    ! σ 矩阵自动转换为 Twiss 参数
+    sigma11 = 1.0e-6,     ! σ_x² (m²)
+    sigma22 = 1.0e-7,     ! σ_{x'}²
+    sigma33 = 1.0e-6,     ! σ_y²
+    sigma44 = 1.0e-7,     ! σ_{y'}²
+    sigma55 = 1.0e-8,     ! σ_s²
+    sigma66 = 1.0e-6,     ! σ_δ²
+    ! 耦合项 (通常设为 0)
+    sigma12 = 0,           ! <x x'>
+    sigma34 = 0,           ! <y y'>
+    sigma56 = 0,           ! <s δ>
+&end
+
+! ---- 方法 2: bunched_beam — 预设束团参数 ----
+! 最常用的束团生成方式
+&bunched_beam
+    ! 粒子数
+    n_particles_per_bunch = 1000,
+
+    ! 发射度
+    emit_x = 1.0e-9,                    ! 水平归一化发射度
+    emit_nx_mechanical = 1,             ! 1=归一化, 0=几何
+    beta_x = 10.0,                      ! beta 函数 (m)
+    alpha_x = 0.0,                      ! alpha 函数
+
+    emit_y = 1.0e-9,
+    beta_y = 5.0,
+    alpha_y = 0.0,
+
+    ! 束团长度与能散
+    Sdelta = 0.01,                      ! δ_{rms}
+    Ss    = 0.002,                      ! s_{rms} (m)
+
+    ! 分布类型
+    distribution_type[0] = "gaussian",   ! 高斯截断分布
+    limit_in_sigmas[0]   = 3.0,         ! 截断在 3σ
+
+    ! 输出
+    bunch = %s.bun,
+&end
+
+! ---- 方法 3: 读取外部粒子分布 ----
+! 从 SDDS 文件加载粒子，用于多阶段仿真
+! &sdds_beam
+!     input = "initial_bunch.sdds",
+!     center_transversely = 1,
+! &end
+
+! ---- 运行 ----
+&run_control
+    n_steps = 1,
+&end
+
+&track
+    center_momentum_also = 1,
+&end

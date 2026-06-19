@@ -1,0 +1,32 @@
+! tutorial/basic/05_optics_demo.lte
+! ============================================
+! FODO 储存环 lattice 用于光学计算演示
+! 使用 Chasman-Green 色散消色弧 + FODO 弧
+
+! 磁铁长度
+L_qd = 0.3              ! 四极磁铁长度
+L_b  = 1.5              ! 二极磁铁长度
+L_d  = 2.0              ! 漂移段长度
+
+! 磁铁强度
+k_qf = 0.6              ! 聚焦四极
+k_qd = -0.6             ! 散焦四极
+angle_b = 2.0 * PI / 16  ! 每块二极角度 (16 块构成完整环)
+
+! 定义元素
+QF : KQUAD, L = L_qd, K1 = k_qf
+QD : KQUAD, L = L_qd, K1 = k_qd
+B1 : CSBEND, L = L_b, ANGLE = angle_b, E1 = angle_b/2, E2 = angle_b/2
+D1 : DRIF, L = L_d
+
+! FODO 半单元
+HALF : LINE = (D1, QF, D1)
+
+! FODO 单元
+CELL : LINE = (HALF, D1, QD, D1)
+
+! 弧区: 4 个弯转磁铁 + 2 个 FODO 单元
+ARC : LINE = (B1, CELL, B1, CELL, B1, CELL, B1)
+
+! 完整环
+FODO_RING : LINE = (ARC, ARC, ARC, ARC)

@@ -1,0 +1,27 @@
+! tutorial/intermediate/02_chrom_ring.lte
+! 带六极磁铁的储存环 lattice
+
+L_qd = 0.3
+L_b  = 1.5
+L_d  = 2.0
+L_sx = 0.1   ! 六极磁铁长度
+
+QF : KQUAD, L = L_qd, K1 = 0.6
+QD : KQUAD, L = L_qd, K1 = -0.6
+B1 : CSBEND, L = L_b, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+
+! 色品校正六极磁铁
+! 放置在色散函数较大处（弯转磁铁附近）
+! 聚焦六极: K2 > 0 (x 方向等效聚焦)
+SF : KSEXT, L = L_sx, K2 = 8.0
+SD : KSEXT, L = L_sx, K2 = -8.0
+
+D1 : DRIF, L = L_d
+
+! 单元结构: D1 B1 D1 SF QF SD QD D1
+CELL : LINE = (D1, B1, D1, SF, QF, SD, QD, D1)
+
+RING : LINE = (CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

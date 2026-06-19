@@ -1,0 +1,51 @@
+! tutorial/basic/10_csr_drift_benchmark.ele
+! ============================================
+! CSR 漂移段基准测试
+! 验证 elegant 的相干同步辐射 (CSR) 漂移模型
+! 参数取自文献中的标准测试案例
+
+&run_setup
+    lattice       = "csr_drift.lte",
+    use_beamline  = "CSR_DRIFT",
+    p_central     = 500.0,               ! 500 MeV/c (低能 → CSR 显著)
+    default_order = 2,
+    rootname      = "csr_bench",
+    ! 🧲 启用 CSR 计算
+    ! CSR 必须激活 wiggler 或专用元素
+&end
+
+! ---- 短束团 (CSR 效应敏感) ----
+&bunched_beam
+    n_particles_per_bunch = 5000,
+    bunch                 = %s.bun,
+    ! 超低发射度
+    emit_x    = 1.0e-12,
+    emit_y    = 1.0e-12,
+    beta_x    = 1.0,
+    alpha_x   = 0.0,
+    beta_y    = 1.0,
+    alpha_y   = 0.0,
+    ! 超短束团
+    Ss        = 1.0e-5,         ! 10 μm RMS
+    Sdelta    = 1.0e-4,         ! 能散极低
+&end
+
+! 使用 CSBEND 的 CSR 功能
+&run_control
+    n_steps  = 1,
+    n_passes = 1,
+&end
+
+! CSRCSBEND: 专用 CSR 弯转磁铁
+! 需要改变 lattice 中的元素类型
+
+&track
+    center_momentum_also = 1,
+&end
+
+! 输出沿束线的横向分布
+&watch
+    filename = %s.w1,
+    mode     = "coordinates",
+    ! 在每个 CSRCSBEND 后输出
+&end

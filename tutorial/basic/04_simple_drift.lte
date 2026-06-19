@@ -1,0 +1,5 @@
+! tutorial/basic/04_simple_drift.lte
+! 一个简单的漂移段，用于束团生成演示
+
+DRIFT1 : DRIF, L = 5.0
+LINE   : LINE = (DRIFT1)

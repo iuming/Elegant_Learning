@@ -1,0 +1,24 @@
+! tutorial/intermediate/01_storage_ring.lte
+! 简化储存环 lattice — 用于闭轨校正演示
+! 包含 BPM 和校正磁铁
+
+L_qd = 0.3
+L_b  = 1.5
+L_d  = 2.0
+
+QF : KQUAD, L = L_qd, K1 = 0.6
+QD : KQUAD, L = L_qd, K1 = -0.6
+B1 : CSBEND, L = L_b, ANGLE = PI/8, E1 = PI/16, E2 = PI/16
+
+! BPM 和校正磁铁
+BPM : MONI
+HCOR: HKICK
+VCOR: VKICK
+
+! 标准单元: BPM QF HCOR VCOR B1 QD
+CELL : LINE = (BPM, QF, HCOR, VCOR, B1, QD)
+
+RING : LINE = (CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL, &
+               CELL, CELL, CELL, CELL)

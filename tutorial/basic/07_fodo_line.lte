@@ -1,0 +1,5 @@
+! tutorial/basic/07_fodo_line.lte
+QF : KQUAD, L = 0.3, K1 = 0.5
+QD : KQUAD, L = 0.3, K1 = -0.5
+D  : DRIF, L = 2.0
+LINE : LINE = (D, QF, D, QD, D, QF, D, QD, D)

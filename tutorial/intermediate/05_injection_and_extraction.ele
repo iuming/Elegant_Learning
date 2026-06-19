@@ -1,0 +1,62 @@
+! tutorial/intermediate/05_injection_and_extraction.ele
+! ============================================
+! 注入与引出仿真
+! 使用 kicker 磁铁模拟束流注入和引出
+
+&run_setup
+    lattice       = "injection.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 2,
+    rootname      = "injection",
+&end
+
+! ---- 注入束团 ----
+! 注入束：通常比储存束有更大发射度和能散
+&bunched_beam
+    n_particles_per_bunch = 500,
+    bunch = %s.bun,
+
+    ! 注入束参数 (较大发射度)
+    emit_x  = 1.0e-7,       ! 100 nm·rad（比储存束大）
+    emit_y  = 1.0e-7,
+    beta_x  = 10.0,
+    alpha_x = 0.0,
+    beta_y  = 10.0,
+    alpha_y = 0.0,
+
+    ! 注入束的质心偏移 (由 bump 移至 septum 位置)
+    centroid_x[0] = -5.0e-3,  ! -5 mm 偏移
+    
+    ! 注入束较大能散
+    Sdelta  = 2.0e-3,
+    Ss      = 5.0e-3,
+
+    ! 注入轨道需要一定 angle
+    centroid_xp[0] = 1.0e-3,  ! 1 mrad 注入角
+&end
+
+! ---- 注入 kicker 时间依赖 ----
+! 使用 BHKICK (内置脉冲) 或在 lattice 中定义 BUMPER
+
+! ---- 多圈跟踪: 注入后经过阻尼衰减 ----
+&run_control
+    n_steps  = 1,
+    n_passes = 100,            ! 100 圈衰减
+&end
+
+&track
+    center_momentum_also = 1,
+&end
+
+! ---- 监测注入效率 ----
+&watch
+    filename = %s.w1,
+    mode     = "coordinates",
+&end
+
+! 使用 &aperture_data 检测丢失粒子
+&aperture_data
+    output = %s.aper,
+    ! 所有元素的孔径定义
+&end

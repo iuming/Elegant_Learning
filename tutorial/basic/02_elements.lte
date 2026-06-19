@@ -1,0 +1,79 @@
+! tutorial/basic/02_elements.lte
+! ============================================
+! elegant 常用元素集合
+! 每个元素详解 + 典型用途
+
+! ======== 漂移段 (DRIF) ========
+! 最基础的元素：自由空间传播
+! 参数: L = 长度 (m)
+DR0 : DRIF, L = 0.5
+
+! ======== 四极磁铁 (KQUAD) ========
+! 线性聚焦/散焦
+! K1 > 0: x 方向聚焦, y 方向散焦
+! K1 < 0: x 方向散焦, y 方向聚焦
+! 参数:
+!   L  = 有效长度 (m)
+!   K1 = 归一化梯度 (1/m²), K1 = G/(Bρ)
+QF  : KQUAD, L = 0.3, K1 = 0.8    ! 聚焦四极
+QD  : KQUAD, L = 0.3, K1 = -0.8   ! 散焦四极
+
+! ======== 二极磁铁 (CSBEND) ========
+! 弯转磁铁: 用于偏转束流和色散
+! CSBEND = 圆弧扇形二极磁铁
+! 参数:
+!   L     = 长度 (m)
+!   ANGLE = 弯转角度 (rad)
+!   E1, E2 = 进出口边缘角
+B1  : CSBEND, L = 1.0, ANGLE = 0.05, E1 = 0.025, E2 = 0.025
+
+! ======== 六极磁铁 (KSEXT) ========
+! 用于色品校正和非线性动力学
+! 参数:
+!   K2 = 归一化六极强度 (1/m³)
+SX  : KSEXT, L = 0.1, K2 = 10.0
+
+! ======== 八极磁铁 (KOCT) ========
+! 用于高阶校正
+! 参数: K3 = 归一化八极强度 (1/m⁴)
+OC  : KOCT,  L = 0.1, K3 = 100.0
+
+! ======== 束流位置监视器 (MONI) ========
+! 用于轨道测量、闭轨分析
+BPM1: MONI
+BPM2: MONI
+
+! ======== 校正磁铁 (HKICK/VKICK) ========
+! 水平和垂直校正二极
+! HKICK: 水平方向微小 kick (rad)
+! VKICK: 垂直方向微小 kick (rad)
+HCOR: HKICK
+VCOR: VKICK
+
+! ======== 高频腔 (RFCA) ========
+! 加速电压
+! 参数:
+!   VOLT = 电压 (MV)
+!   FREQ = 频率 (MHz)
+!   PHASE = 相位 (度, 0° 为加速 crest)
+CAV : RFCA, VOLT = 1.5, FREQ = 500.0, PHASE = 0
+
+! ======== 准直器/光阑 (SCRAPER) ========
+! 限制孔径
+! 参数: APERTURE = 椭圆参数 (x半径, y半径)
+SCR : SCRAPER, APERTURE = {0.01, 0.005}
+
+! ======== wigglers 和 undulators (插入件) ========
+! 用于产生同步辐射或辐射阻尼
+! UKICKMAP: 从 kick map 加载 undulator 场
+! WIGGLER: 标准 wiggler 模型
+
+! ======== MARK: 标记元素 ========
+! 无任何物理作用，仅用于标识位置
+MK_START: MARK
+MK_END  : MARK
+
+! ======== 定义一个测试 beamline ========
+MAIN : LINE = (DR0, QF, DR0, BPM1, DR0, &
+               QD, DR0, B1, DR0, BPM2, DR0, &
+               SX, DR0, CAV, DR0, HCOR, DR0, SCR)

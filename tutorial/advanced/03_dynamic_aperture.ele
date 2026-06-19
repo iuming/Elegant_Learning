@@ -1,0 +1,35 @@
+! tutorial/advanced/03_dynamic_aperture.ele
+! ============================================
+! 动力学孔径 (Dynamic Aperture) 计算
+! 寻找粒子稳定的最大横向位移
+! 使用 &dynamic_aperture 命令
+
+&run_setup
+    lattice       = "da_ring.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 3,      ! 需要 3 阶 (六极磁铁非线性)
+    rootname      = "da",
+&end
+
+! ---- 动力学孔径扫描 ----
+&dynamic_aperture
+    output = %s.da,
+    
+    ! 扫描参数范围
+    xmin   = -0.02, xmax = 0.02,    ! ±20 mm
+    ymin   = -0.005, ymax = 0.005,  ! ±5 mm
+    nx     = 21,
+    ny     = 11,
+    
+    ! 动量偏移扫描
+    n_delta = 5,
+    delta_minimum = -0.03,
+    delta_maximum = 0.03,
+    
+    ! 跟踪参数
+    n_turns = 500,     ! 每点跟踪 500 圈
+&end
+
+&run_control &end
+&track &end
