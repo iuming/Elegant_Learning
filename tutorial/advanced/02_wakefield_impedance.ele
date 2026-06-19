@@ -5,7 +5,7 @@
 ! 对高流强储存环至关重要
 
 &run_setup
-    lattice       = "wake_ring.lte",
+    lattice       = "02_wake_ring.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 2,

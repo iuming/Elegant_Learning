@@ -11,21 +11,21 @@
 ! 动量 1 GeV/c 电子
 ! FODO 半周期长度
 
-L_half = 2.0            ! 半单元长度 (m)
-L_drift = 0.5           ! 漂移段长度
-L_quad  = 0.2           ! 四极磁铁长度
-k_quad  = 0.5           ! 四极磁铁强度 (1/m²)
+! 这里直接写数值，避免初学者被 RPN/变量展开细节卡住：
+!   漂移段长度 L = 0.5 m
+!   四极磁铁长度 L = 0.2 m
+!   四极磁铁强度 |K1| = 0.5 1/m²
 
 ! ---- 定义元素 ----
 ! 漂移段
-DR1 : DRIF, L = L_drift
-DR2 : DRIF, L = L_drift
+DR1 : DRIF, L = 0.5
+DR2 : DRIF, L = 0.5
 
 ! 聚焦四极磁铁 (垂直方向聚焦)
-QF  : KQUAD, L = L_quad, K1 = k_quad
+QF  : KQUAD, L = 0.2, K1 = 0.5
 
 ! 散焦四极磁铁
-QD  : KQUAD, L = L_quad, K1 = -k_quad
+QD  : KQUAD, L = 0.2, K1 = -0.5
 
 ! ---- 定义 beamline ----
 ! FODO 半单元: DR1 QF DR2

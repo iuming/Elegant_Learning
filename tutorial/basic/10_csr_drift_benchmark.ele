@@ -5,7 +5,7 @@
 ! 参数取自文献中的标准测试案例
 
 &run_setup
-    lattice       = "csr_drift.lte",
+    lattice       = "10_csr_drift.lte",
     use_beamline  = "CSR_DRIFT",
     p_central     = 500.0,               ! 500 MeV/c (低能 → CSR 显著)
     default_order = 2,

@@ -4,7 +4,7 @@
 ! elegant 的扫描功能: vary_element + vary_element 循环
 
 &run_setup
-    lattice       = "energy_scan.lte",
+    lattice       = "06_energy_scan.lte",
     use_beamline  = "LINE",
     p_central     = 1000.0,
     default_order = 2,

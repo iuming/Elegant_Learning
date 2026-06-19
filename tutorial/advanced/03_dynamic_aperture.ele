@@ -5,7 +5,7 @@
 ! 使用 &dynamic_aperture 命令
 
 &run_setup
-    lattice       = "da_ring.lte",
+    lattice       = "03_da_ring.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 3,      ! 需要 3 阶 (六极磁铁非线性)

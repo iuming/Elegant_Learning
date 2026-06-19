@@ -4,7 +4,7 @@
 ! 每个元素有其特定参数，名称符大小写敏感
 
 &run_setup
-    lattice       = "elements.lte",
+    lattice       = "02_elements.lte",
     use_beamline  = "MAIN",
     p_central     = 3000.0,           ! 3 GeV/c
     default_order = 2,

@@ -4,7 +4,7 @@
 ! 演示高频腔加速、同步加速器振荡
 
 &run_setup
-    lattice       = "rf_ring.lte",
+    lattice       = "04_rf_ring.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 2,

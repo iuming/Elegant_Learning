@@ -1,0 +1,41 @@
+# elegant / SDDS generated outputs
+*.twi
+*.bun
+*.cen
+*.clo
+*.cor
+*.cor_orb
+*.traj
+*.matrix
+*.param
+*.aper
+*.da
+*.fmap
+*.mmap
+*.w1
+*.w2
+*.error
+*.sdds
+*.done
+*.log
+
+# Generated plots/data
+*.png
+*.csv
+outputs/
+output/
+results/
+mc_results/
+scan_output/
+mc_output/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*~

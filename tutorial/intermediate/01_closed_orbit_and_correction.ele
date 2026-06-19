@@ -5,7 +5,7 @@
 ! 三步走: 误差 → 闭轨 → 校正
 
 &run_setup
-    lattice       = "storage_ring.lte",
+    lattice       = "01_storage_ring.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 2,

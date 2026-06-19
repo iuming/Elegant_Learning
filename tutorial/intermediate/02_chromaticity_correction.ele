@@ -5,7 +5,7 @@
 ! 使用六极磁铁校正色品到正值
 
 &run_setup
-    lattice       = "chrom_ring.lte",
+    lattice       = "02_chrom_ring.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 2,

@@ -5,7 +5,7 @@
 ! 方法: 调整四极磁铁强度
 
 &run_setup
-    lattice       = "opt_ring.lte",
+    lattice       = "03_opt_ring.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 2,

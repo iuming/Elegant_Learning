@@ -5,11 +5,17 @@
 
 ! ---- 仿真设置 ----
 &run_setup
-    lattice       = "fodo.lte",          ! 引用同目录下的 lattice 文件
+    lattice       = "01_fodo.lte",          ! 引用同目录下的 lattice 文件
     use_beamline  = "FODO",              ! 使用 lattice 中定义的 beamline
     p_central     = 1000.0,               ! 中心动量 (MeV/c)
     default_order = 2,                   ! 默认传输矩阵阶数
     parameters    = "params.out",         ! 输出参数文件
+&end
+
+! ---- 运行控制 ----
+! elegant 要求 run_control 位于 bunched_beam 等束流命令之前。
+&run_control
+    n_steps = 1,                         ! 束团数
 &end
 
 ! ---- 束流初始化 ----
@@ -30,11 +36,6 @@
     filename  = %s.twi,                  ! Twiss 参数输出
     matched   = 0,                       ! 不要求匹配 (对于传输线)
     output_at_each_step = 1,             ! 输出每个元素处的值
-&end
-
-! ---- 运行控制 ----
-&run_control
-    n_steps = 1,                         ! 束团数
 &end
 
 ! ---- 粒子跟踪 ----

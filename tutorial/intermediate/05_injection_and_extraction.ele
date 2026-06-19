@@ -4,7 +4,7 @@
 ! 使用 kicker 磁铁模拟束流注入和引出
 
 &run_setup
-    lattice       = "injection.lte",
+    lattice       = "05_injection.lte",
     use_beamline  = "RING",
     p_central     = 3000.0,
     default_order = 2,

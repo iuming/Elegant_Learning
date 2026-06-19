@@ -37,6 +37,9 @@ Elegant_Learning/
 │   └── advanced/          #  5 高级篇：误差分析、阻抗、并行
 ├── examples/              #  4 实用脚本与模板
 ├── projects/              #  2 综合项目
+├── RUNNING.md              # 运行说明
+├── requirements.txt        # Python 后处理依赖
+├── INDEX.md                # 文件索引
 └── README.md
 ```
 
@@ -49,7 +52,7 @@ Elegant_Learning/
 | 🔴 高级 | 5 | 误差与容差分析、尾场效应、CSR、动力学孔径、并行 Pelegant |
 | 🛠 工具 | 4 | SDDS 处理脚本、Python 后处理、批量仿真模板 |
 | 🚀 项目 | 2 | FODO 线完整仿真、储存环 lattice 从设计到 DA |
-| **合计** | **26** | |
+| **合计** | **26 个主题** | 实际含配套 `.lte`/脚本共 50+ 文件 |
 
 ## 快速开始
 
@@ -58,8 +61,9 @@ Elegant_Learning/
 git clone git@github.com:iuming/Elegant_Learning.git
 cd Elegant_Learning
 
-# 运行第一个示例
-elegant tutorial/basic/01_hello_elegant.ele
+# 运行第一个示例（建议从文件所在目录运行）
+cd tutorial/basic
+elegant 01_hello_elegant.ele
 ```
 
 ```elegant
@@ -94,6 +98,10 @@ elegant tutorial/basic/01_hello_elegant.ele
 - [elegant 论坛](https://www3.aps.anl.gov/forums/elegant/)
 - [elegant GitHub 源码](https://github.com/rtsoliday/elegant)
 - [SDDS 工具包文档](https://www.aps.anl.gov/Accelerator-Operations-Physics/Documentation)
+
+## 运行说明
+
+多数 `.ele` 文件引用同目录下的 `.lte` 文件；运行细节、SDDS 输出和 Python 后处理说明见 `RUNNING.md`。
 
 ## License
 

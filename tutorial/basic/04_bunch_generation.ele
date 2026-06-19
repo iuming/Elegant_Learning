@@ -6,7 +6,7 @@
 ! 3. bunched_beam: 预设束团参数
 
 &run_setup
-    lattice       = "simple_drift.lte",
+    lattice       = "04_simple_drift.lte",
     use_beamline  = "LINE",
     p_central     = 1000.0,
     default_order = 2,

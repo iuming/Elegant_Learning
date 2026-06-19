@@ -6,7 +6,7 @@
 ! %s 自动命名约定
 
 &run_setup
-    lattice       = "fodo_line.lte",
+    lattice       = "07_fodo_line.lte",
     use_beamline  = "LINE",
     p_central     = 1000.0,
     default_order = 2,

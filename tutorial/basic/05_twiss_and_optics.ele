@@ -5,7 +5,7 @@
 ! 使用 twiss_output 和 matrix_output
 
 &run_setup
-    lattice       = "optics_demo.lte",
+    lattice       = "05_optics_demo.lte",
     use_beamline  = "FODO_RING",
     p_central     = 3000.0,
     default_order = 2,
