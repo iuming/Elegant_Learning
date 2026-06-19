@@ -1,0 +1,14 @@
+! tutorial/intermediate/06_matching_and_constraints.lte
+! ============================================
+! 进阶示例：可匹配的 FODO 传输线
+! 目标：通过两个四极磁铁强度，让末端 beta 接近期望值。
+
+D1:  DRIF, L=1.0
+QF:  QUAD, L=0.25, K1= 0.85
+QD:  QUAD, L=0.25, K1=-0.85
+BPM: MONI
+ENDM: MARK
+
+! 一个 4 单元 FODO 线；真实工程中可把 BPM/校正子放在每个单元。
+CELL: LINE=(D1,QF,D1,BPM,D1,QD,D1,BPM)
+MATCHLINE: LINE=(4*CELL,ENDM)

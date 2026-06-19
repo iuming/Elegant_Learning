@@ -1,0 +1,71 @@
+! tutorial/intermediate/06_matching_and_constraints.ele
+! ============================================
+! 主题：匹配与约束思想（matching by optimization）
+! 说明：不同 elegant 版本的优化语法略有差异，本文件给出一个教学模板：
+!      1) 用 vary_element 声明可调旋钮；
+!      2) 输出 Twiss；
+!      3) 把目标写入 target 文件，供后处理/优化流程检查。
+
+&run_setup
+    lattice       = "06_matching_and_constraints.lte",
+    use_beamline  = "MATCHLINE",
+    p_central     = 500.0,          ! 500 MeV/c 电子传输线示例
+    default_order = 2,
+    rootname      = "match_demo",
+    parameters    = %s.param,
+&end
+
+&run_control
+    n_steps = 1,
+    n_indices = 1,
+&end
+
+! 可调变量：四极磁铁强度。
+! 提醒：此处用 initial/final 给出扫描范围；复杂匹配可配合 optimization_term。
+&vary_element
+    index_number = 0,
+    index_limit = 3,
+    name = QF,
+    item = K1,
+    initial = 0.85,
+    final = 1.05,
+    differential = 1,
+&end
+
+&vary_element
+    index_number = 0,
+    index_limit = 3,
+    name = QD,
+    item = K1,
+    initial = -0.85,
+    final = -1.05,
+    differential = 1,
+&end
+
+! 初始束流矩阵：这里用发射度 + Twiss 近似描述入射束。
+&bunched_beam
+    n_particles_per_bunch = 256,
+    emit_x  = 2.0e-9,
+    emit_y  = 2.0e-9,
+    beta_x  = 8.0,
+    beta_y  = 5.0,
+    alpha_x = 0.0,
+    alpha_y = 0.0,
+    sigma_dp = 5.0e-4,
+    sigma_s  = 1.0e-3,
+    bunch = %s.bun,
+&end
+
+! 输出 Twiss：传输线不是闭合环，因此 matched=0。
+&twiss_output
+    filename = %s.twi,
+    matched  = 0,
+    output_at_each_step = 1,
+&end
+
+! 说明：这里用 vary_element + n_indices 展示匹配变量扫描。
+! 更复杂的自动匹配可在此基础上增加 optimization_term/optimization_setup。
+
+&track
+    center_momentum_also = 1,
+&end

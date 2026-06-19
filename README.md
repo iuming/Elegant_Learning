@@ -31,15 +31,17 @@ cd elegant && make -j
 
 ```
 Elegant_Learning/
-├── tutorial/              # 20 个教程（按难度递进）
+├── docs/                  # 设计工作流、概念说明
+├── cheatsheets/           # elegant/SDDS 速查表
+├── tutorial/              # 22 个教程（按难度递进）
 │   ├── basic/             # 10 基础篇：lattice 语法、元素、命令
-│   ├── intermediate/      #  5 进阶篇：环、注入、匹配
-│   └── advanced/          #  5 高级篇：误差分析、阻抗、并行
-├── examples/              #  4 实用脚本与模板
+│   ├── intermediate/      #  6 进阶篇：环、注入、匹配
+│   └── advanced/          #  6 高级篇：误差分析、阻抗、FMA、并行
+├── examples/              #  6 实用脚本与模板
 ├── projects/              #  2 综合项目
-├── RUNNING.md              # 运行说明
-├── requirements.txt        # Python 后处理依赖
-├── INDEX.md                # 文件索引
+├── RUNNING.md             # 运行说明
+├── requirements.txt       # Python 后处理依赖
+├── INDEX.md               # 文件索引
 └── README.md
 ```
 
@@ -48,11 +50,12 @@ Elegant_Learning/
 | 难度 | 数量 | 涵盖主题 |
 |------|------|----------|
 | 🟢 基础 | 10 | Lattice 文件语法、元素类型、run_setup、束团生成、Twiss 计算 |
-| 🟡 进阶 | 5 | 闭合轨道、轨道校正、色品校正、优化、RF 加速 |
-| 🔴 高级 | 5 | 误差与容差分析、尾场效应、CSR、动力学孔径、并行 Pelegant |
-| 🛠 工具 | 4 | SDDS 处理脚本、Python 后处理、批量仿真模板 |
+| 🟡 进阶 | 6 | 闭合轨道、轨道校正、色品校正、优化、RF 加速、匹配约束 |
+| 🔴 高级 | 6 | 误差与容差分析、尾场效应、CSR、动力学孔径、FMA、并行 Pelegant |
+| 🛠 工具 | 6 | SDDS 处理脚本、Python 后处理、批量仿真、FMA 与参数扫描模板 |
+| 📚 文档 | 2 | 设计工作流、elegant/SDDS 速查 |
 | 🚀 项目 | 2 | FODO 线完整仿真、储存环 lattice 从设计到 DA |
-| **合计** | **26 个主题** | 实际含配套 `.lte`/脚本共 50+ 文件 |
+| **合计** | **30 个主题** | 实际含配套 `.lte`/脚本共 58+ 文件 |
 
 ## 快速开始
 
@@ -86,8 +89,8 @@ elegant 01_hello_elegant.ele
 ```
 基础 01-05  →  理解 elegant 输入文件结构与元素语法
 基础 06-10  →  掌握束流参数计算（Twiss、包络、动量紧缩因子）
-进阶 01-05  →  环动力学核心（闭轨、校正、色品、优化）
-高级 01-05  →  物理效应与工程分析（误差、尾场、CSR、DA）
+进阶 01-06  →  环动力学核心（闭轨、校正、色品、优化、匹配）
+高级 01-06  →  物理效应与工程分析（误差、尾场、CSR、DA、FMA）
 工具 + 项目  →  独立完成加速器 lattice 设计
 ```
 

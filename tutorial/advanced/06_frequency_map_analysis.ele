@@ -1,0 +1,45 @@
+! tutorial/advanced/06_frequency_map_analysis.ele
+! ============================================
+! 主题：频率图分析（Frequency Map Analysis, FMA）的数据准备
+! 思路：
+!   - 用含六极的环跟踪一组不同初始振幅的粒子；
+!   - 输出 turn-by-turn 坐标；
+!   - 后处理脚本对前半段/后半段 tune 做差，估计频率扩散。
+!
+! 运行后建议：
+!   elegant 06_frequency_map_analysis.ele
+!   python ../../examples/fma_tune_diff.py fma_demo.cen
+
+&run_setup
+    lattice       = "06_frequency_map_analysis.lte",
+    use_beamline  = "RING",
+    p_central     = 3000.0,
+    default_order = 3,          ! 六极非线性需要三阶映射
+    rootname      = "fma_demo",
+    centroid      = %s.cen,     ! 输出逐步中心轨道，可作为 FMA 入门数据
+    parameters    = %s.param,
+&end
+
+&run_control
+    n_steps = 1,
+&end
+
+! 构造一个小束团：用较大的横向发射度让粒子覆盖不同振幅。
+! 更严格的 FMA 通常会用外部 SDDS 粒子文件精确放置网格点。
+&bunched_beam
+    n_particles_per_bunch = 2048,
+    emit_x   = 8.0e-9,
+    emit_y   = 4.0e-9,
+    sigma_dp = 8.0e-4,
+    sigma_s  = 3.0e-3,
+    bunch    = %s.bun,
+&end
+
+&twiss_output
+    filename = %s.twi,
+    matched  = 1,
+&end
+
+&track
+    center_momentum_also = 1,
+&end

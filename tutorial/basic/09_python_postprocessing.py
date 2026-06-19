@@ -1,8 +1,8 @@
-! tutorial/basic/09_python_postprocessing.py
-! ============================================
-! 使用 Python 读取/分析 SDDS 输出文件
-! 推荐使用 PySDDS 或直接解析 SDDS ASCII 格式
-! 运行: python3 python_postprocessing.py
+# tutorial/basic/09_python_postprocessing.py
+# ============================================
+# 使用 Python 读取/分析 SDDS 输出文件
+# 推荐使用 PySDDS 或直接解析 SDDS ASCII 格式
+# 运行: python3 python_postprocessing.py
 
 import numpy as np
 import matplotlib.pyplot as plt

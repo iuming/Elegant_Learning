@@ -2,6 +2,12 @@
 
 所有文件列表及用途说明。
 
+## docs/ 与 cheatsheets/
+| 文件 | 用途 |
+|------|------|
+| `docs/elegant_design_workflow.md` | 从需求、lattice、Twiss、误差、跟踪到 SDDS 统计的设计闭环 |
+| `cheatsheets/elegant_sdds_quickref.md` | elegant 命令、常用元素、SDDS 命令和排错关键词速查 |
+
 ## tutorial/basic/ (10 个教程)
 | 编号 | 文件 | 主题 |
 |------|------|------|
@@ -16,7 +22,7 @@
 | 09 | `09_python_postprocessing.py` | Python 后处理与绘图 |
 | 10 | `10_csr_drift_benchmark.ele` + `.lte` | CSR 漂移基准测试 |
 
-## tutorial/intermediate/ (5 个教程)
+## tutorial/intermediate/ (6 个教程)
 | 编号 | 文件 | 主题 |
 |------|------|------|
 | 01 | `01_closed_orbit_and_correction.ele` + `.lte` | 闭轨计算与 SVD 校正 |
@@ -24,8 +30,9 @@
 | 03 | `03_optimization.ele` + `.lte` | 参数优化 (simplex/powell) |
 | 04 | `04_rf_acceleration.ele` + `.lte` | RF 加速与纵向动力学 |
 | 05 | `05_injection_and_extraction.ele` + `.lte` | 注入与引出仿真 |
+| 06 | `06_matching_and_constraints.ele` + `.lte` | 传输线匹配、约束与优化变量 |
 
-## tutorial/advanced/ (5 个教程)
+## tutorial/advanced/ (6 个教程)
 | 编号 | 文件 | 主题 |
 |------|------|------|
 | 01 | `01_error_tolerance_analysis.ele` + `.lte` | 误差与容差分析 (对准 + 场质量) |
@@ -33,14 +40,17 @@
 | 03 | `03_dynamic_aperture.ele` + `.lte` | 动力学孔径 (DA 扫描) |
 | 04 | `04_momentum_aperture.ele` + `.lte` | 动量孔径 + 频率图 (FMA) |
 | 05 | `05_parallel_pelegant.sh` | 并行 Pelegant (MPI/GPU 使用指南) |
+| 06 | `06_frequency_map_analysis.ele` + `.lte` | FMA 数据准备、六极非线性、tune 扩散 |
 
-## examples/ (4 个工具)
+## examples/ (6 个工具)
 | 文件 | 用途 |
 |------|------|
 | `batch_runner.sh` | 批量仿真框架 (参数扫描, MC, 并行) |
 | `plot_optics.py` | 通用光学图绘制脚本 |
 | `template_ring.ele` | 储存环仿真模板 (可复用) |
 | `sdds_utils.py` | SDDS Python 工具集 |
+| `fma_tune_diff.py` | 教学版 FFT tune 与频率扩散估计 |
+| `scan_quad_strength.py` | 四极强度批量扫描模板，支持 dry-run 与实际运行 |
 
 ## projects/ (2 个项目)
 | 目录 | 主题 |

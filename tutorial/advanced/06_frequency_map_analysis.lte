@@ -1,0 +1,16 @@
+! tutorial/advanced/06_frequency_map_analysis.lte
+! ============================================
+! 高级示例：含六极的简化环，用于频率图分析（FMA/NAFF 后处理）。
+! 注意：本 lattice 是教学模型，不代表真实机器。
+
+D:    DRIF, L=0.55
+QF:   QUAD, L=0.30, K1= 1.20
+QD:   QUAD, L=0.30, K1=-1.15
+B:    CSBEN, L=1.20, ANGLE=0.1308996939, E1=0.0654498469, E2=0.0654498469
+SF:   SEXT, L=0.15, K2= 18.0
+SD:   SEXT, L=0.15, K2=-22.0
+BPM:  MONI
+RF:   RFCA, L=0.0, VOLT=2.5e6, FREQ=499654000.0, PHASE=0
+
+ARC:  LINE=(BPM,D,QF,D,SF,D,B,D,SD,D,QD,D,B)
+RING: LINE=(24*ARC,RF)
