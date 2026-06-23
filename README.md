@@ -45,6 +45,11 @@ Elegant_Learning/
 └── README.md
 ```
 
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=iuming/Elegant_Learning&type=Date)](https://www.star-history.com/#iuming/Elegant_Learning&Date)
+
 ## 📊 内容总览
 
 | 难度 | 数量 | 涵盖主题 |
