@@ -38,7 +38,7 @@ def load_turn_by_turn(path: Path) -> np.ndarray:
     rows = []
     for line in text.splitlines():
         line = line.strip().replace(",", " ")
-        if not line or line.startswith("!") or line.startswith("#"):
+        if not line or line.startswith(("!", "#")):
             continue
         parts = line.split()
         if len(parts) < 3:
@@ -49,20 +49,34 @@ def load_turn_by_turn(path: Path) -> np.ndarray:
             continue
     if len(rows) < 16:
         raise SystemExit("有效 turn-by-turn 数据太少，至少需要 16 行。")
-    return np.asarray(rows)
+    data = np.asarray(rows, dtype=float)
+    if not np.all(np.isfinite(data)):
+        raise SystemExit("输入数据包含非数值内容，请检查 Pass/x/y 列。")
+    return data
 
 
 def estimate_tune(signal: np.ndarray) -> float:
     """用 Hann 窗 + FFT 峰值估计 0~0.5 之间的小数 tune。"""
     signal = np.asarray(signal, dtype=float)
+    if signal.size < 8:
+        return float("nan")
     signal = signal - np.mean(signal)
-    windowed = signal * np.hanning(signal.size)
+    window = np.hanning(signal.size)
+    windowed = signal * window
+    if np.allclose(windowed, 0.0):
+        return float("nan")
     spectrum = np.abs(np.fft.rfft(windowed))
     freqs = np.fft.rfftfreq(signal.size, d=1.0)
     if spectrum.size <= 1:
         return float("nan")
     spectrum[0] = 0.0  # 去掉直流分量
-    return float(freqs[int(np.argmax(spectrum))])
+    peak = int(np.argmax(spectrum))
+    if 0 < peak < spectrum.size - 1:
+        left, center, right = spectrum[peak - 1 : peak + 2]
+        denom = left - 2 * center + right
+        if denom != 0:
+            peak = peak + 0.5 * (left - right) / denom
+    return float(np.clip(peak / signal.size, 0.0, 0.5))
 
 
 def main() -> None:
